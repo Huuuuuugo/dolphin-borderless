@@ -1,9 +1,13 @@
 import ctypes
+import time
 
 import win32.lib.win32con as win32con
 from win32 import win32gui
 from win32 import win32api
 import pygetwindow as gw
+
+
+MAX_ACTIVATE_RERTRIES = 50
 
 
 def set_square_edges(hwnd: gw.Win32Window | int):
@@ -85,3 +89,27 @@ def set_window_size(hwnd: gw.Win32Window | int, w: int, h: int):
     offset_h = h - prev_h
 
     hwnd.resize(offset_w, offset_h)
+
+
+def activate_window(hwnd: gw.Win32Window | int):
+    if not isinstance(hwnd, gw.PyGetWindowException):
+        for window in gw.getAllWindows():
+            if window._hWnd == hwnd:
+                hwnd = window
+                break
+
+    attempt_counter = 1
+    while attempt_counter <= MAX_ACTIVATE_RERTRIES:
+        print(f"attempt #{attempt_counter}")
+        try:
+            hwnd.activate()
+            break
+
+        except gw.PyGetWindowException:
+            time.sleep(1 / 10)
+            attempt_counter += 1
+            continue
+
+    if attempt_counter >= MAX_ACTIVATE_RERTRIES:
+        msg = "Could not activate window"
+        raise gw.PyGetWindowException(msg)

@@ -3,7 +3,7 @@ import re
 
 import pygetwindow as gw
 
-from utils import set_square_edges, set_window_pos, set_window_size
+from utils import set_square_edges, set_window_pos, set_window_size, activate_window
 
 SCREEN_DIMENSIONS = (1920, 1080)
 GBA_DIMENSIONS = (240, 160)
@@ -75,9 +75,9 @@ def main():
 
     # bring screens up front
     time.sleep(1 / 5)
-    gba.activate()
+    activate_window(gba)
     time.sleep(1 / 5)
-    game.activate()
+    activate_window(game)
     time.sleep(1 / 5)
 
     # activate both windows if any of them comes up front
@@ -90,14 +90,14 @@ def main():
 
             if not on_top and active_window.title == gba.title:
                 on_top = True
-                game.activate()
+                activate_window(game)
                 time.sleep(1 / 20)
 
             elif not on_top and active_window.title == game.title:
                 on_top = True
-                gba.activate()
+                activate_window(gba)
                 time.sleep(1 / 20)
-                game.activate()
+                activate_window(game)
                 time.sleep(1 / 20)
 
         # check if either the game or gba screen has been closed
